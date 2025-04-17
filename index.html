@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duplanje</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #1c1c1c;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .card-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .card {
+      font-size: 24px;
+      width: 60px;
+      height: 60px;
+      background: #333;
+      border: 2px solid white;
+      border-radius: 8px;
+      line-height: 60px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .selected {
+      background: #3498db;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    .buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .green { background: #2ecc71; color: white; }
+    #rezultat {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Duplanje</h1>
+  <p>Unesi poslednje 4 karte (klikni da izabereš R/C):</p>
+  <div class="card-row" id="cards">
+    <div class="card" onclick="toggleCard(0)">?</div>
+    <div class="card" onclick="toggleCard(1)">?</div>
+    <div class="card" onclick="toggleCard(2)">?</div>
+    <div class="card" onclick="toggleCard(3)">?</div>
+  </div>
+
+  <div class="buttons">
+    <button class="green" onclick="pretrazi()">Sledeća</button>
+  </div>
+
+  <div id="rezultat"></div>
+
+  <script>
+    // r = crveno, c = crno
+    let karte = ["", "", "", ""];
+    const baza = {
+      "rcrc": "Crveno",
+      "crrc": "Crno",
+      "rrrr": "Crno",
+      "rccc": "Crveno",
+      // ... ovde ubaciš sve tačne kombinacije koje imaš
+    };
+
+    function toggleCard(i) {
+      const el = document.getElementsByClassName("card")[i];
+      karte[i] = karte[i] === "r" ? "c" : "r";
+      el.textContent = karte[i].toUpperCase();
+      el.classList.add("selected");
+    }
+
+    function pretrazi() {
+      if (karte.includes("")) {
+        return document.getElementById("rezultat").innerText = "Unesi sve 4 karte.";
+      }
+
+      const unos = karte.join("");
+      let odgovor = baza[unos];
+
+      if (!odgovor) {
+        // fallback logika: ako je više 'r', preporuči 'Crno', obratno, ili nasumično ako je izjednačeno
+        const countR = karte.filter(x => x === "r").length;
+        const countC = 4 - countR;
+        if (countR > countC) odgovor = "Crno";
+        else if (countC > countR) odgovor = "Crveno";
+        else odgovor = Math.random() < 0.5 ? "Crveno" : "Crno";
+      }
+
+      document.getElementById("rezultat").innerText = "Preporuka: " + odgovor;
+    }
+  </script>
+</body>
+</html>
